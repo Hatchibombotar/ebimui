@@ -11,5 +11,7 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [solidJs()]
+  integrations: [solidJs()],
+  site: "https://hatchibombotar.com",
+  base: "/ebimui"
 });
