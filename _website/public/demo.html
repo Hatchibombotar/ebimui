@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<script src="wasm_exec.js"></script>
+<style>
+    * {
+        box-sizing: border-box;
+        background-color: #2775a6 !important;
+    }
+</style>
+<script>
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("demo.wasm"), go.importObject).then(result => {
+    go.run(result.instance);
+});
+</script>

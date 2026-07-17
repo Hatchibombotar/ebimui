@@ -1,0 +1,57 @@
+---
+import "../styles/global.css";
+
+import Readme from "../../../readme.md";
+
+import { FaBrandsNpm, FaBrandsGithub, FaBrandsGolang } from "solid-icons/fa";
+import { CgAsterisk, CgCheck } from "solid-icons/cg";
+
+const PKG_URL = "https://pkg.go.dev/github.com/hatchibombotar/ebimui";
+const GITHUB_URL = "https://github.com/hatchibombotar/ebimui";
+const MAIN_SITE_URL = "https://www.hatchibombotar.com/";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/png+xml" href="/favicon.png" />
+		<link rel="icon" href="/favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>ebimui</title>
+	</head>
+	<body>
+		<div class="mx-auto max-w-2xl my-4">
+			<header class="flex items-center mt-5 mb-2 mx-4">
+				<a href={GITHUB_URL} target="_blank">
+					<FaBrandsGithub size={32} class="mr-4" />
+				</a>
+				<a href={PKG_URL} target="_blank">
+					<FaBrandsGolang size={32} class="mr-4" />
+				</a>
+				<a href={MAIN_SITE_URL} target="_blank" class="ml-auto">
+					<img src="./favicon.png" class="h-10" />
+				</a>
+			</header>
+			<hr class="mb-5 border-neutral-300" />
+			<main class="max-w-[100vw] mb-32 mt-8">
+				
+				<div class="mx-4">
+					<div class="prose">
+						<Readme />
+					</div>
+				</div>
+
+
+				<div class="max-w-2xl mx-4 text-center mt-8">
+					<h2 class="font-extrabold text-2xl" id="demo">Full Demo</h2>
+					<div class="w-full py-4 flex items-center justify-center">
+						<iframe class="rounded-xl" src="demo.html" width="456" height="342" allowtransparency="true"></iframe>
+					</div>
+					<a class="underline text-blue-700 text-sm" href="./demo.html">View in Fullscreen</a>
+				</div>
+
+			</main>
+		</div>
+	</body>
+</html>
