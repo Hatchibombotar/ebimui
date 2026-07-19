@@ -13,8 +13,6 @@ type Box struct {
 	Children []GenericWidget
 	// parent   GenericWidget
 
-	eventHandler *UIContext
-
 	resultX, resultY          int
 	resultWidth, resultHeight int
 	minWidth, minHeight       int
@@ -623,7 +621,6 @@ func (w *Box) string(padding string) string {
 		", padding=(", w.op.Padding.Left, ",", w.op.Padding.Top, ",", w.op.Padding.Right, ",", w.op.Padding.Bottom, ")",
 		", x=", w.resultX,
 		", y=", w.resultY,
-		", hasEventHandler=", w.eventHandler != nil,
 		">") + "\n"
 	for _, child := range w.Children {
 		switch child := child.(type) {

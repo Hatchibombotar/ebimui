@@ -22,9 +22,13 @@ type Game struct {
 	checkboxTicked       bool
 
 	sliderValue int
+
+	gridItemCount int
 }
 
-var tabs = []string{"Button", "Box", "Checkbox", "Card Game", "Dropdown", "Grid Layout", "Radio", "Slider"}
+var tabs = []string{"Button", "Checkbox", "Dropdown", "Grid Layout", "Radio", "Slider"}
+
+// TODO: "Box", "Card Game"
 
 func (g *Game) Update() error {
 	g.uiContext.PreUpdate()
@@ -145,20 +149,30 @@ func (g *Game) Update() error {
 
 				case "Grid Layout":
 					b.AppendNewBoxWidget(func(b *ebimui.Box) {
-						b.LayoutMode(ebimui.LayoutGrid)
-						b.Columns(3)
-						b.Gap(4)
-						n := 15
-						for i := range n {
-							b.AppendNewBoxWidget(func(b *ebimui.Box) {
-								r := uint8(255.0 * (float64(n-i) / float64(n)))
-								g := uint8(255.0 * ((float64(i)) / float64(n)))
-								b.DrawFillSolid(color.CMYK{r, g, 50, 0})
-								b.FixedHeight(40)
-								b.FixedWidth(40)
-							})
-						}
+						b.LayoutDirection(ebimui.LayoutRow)
+						b.Gap(32)
+
+						b.AppendNewBoxWidget(func(b *ebimui.Box) {
+							b.LayoutMode(ebimui.LayoutGrid)
+							b.Columns(3)
+							b.Gap(4)
+							n := g.gridItemCount
+							for i := range n {
+								b.AppendNewBoxWidget(func(b *ebimui.Box) {
+									r := uint8(255.0 * (float64(n-i) / float64(n)))
+									g := uint8(255.0 * ((float64(i)) / float64(n)))
+									b.DrawFillSolid(color.CMYK{r, g, 50, 0})
+									b.FixedHeight(40)
+									b.FixedWidth(40)
+								})
+							}
+						})
+
+						b.AddChild(
+							g.CreateSlider(3, 36, &g.gridItemCount),
+						)
 					})
+
 					// var d int = 1
 					// options := []DropdownOption{}
 					// b.AddChild(g.CreateDropdown([]string{"Option A", "Option B", "Option C"}, &d))
@@ -196,7 +210,20 @@ func (g *Game) Update() error {
 						})
 					}
 				case "Slider":
-					b.AddChild(g.CreateSlider(0, 100, &g.sliderValue))
+					b.AppendNewBoxWidget(func(b *ebimui.Box) {
+						b.LayoutDirection(ebimui.LayoutColumn)
+						b.Gap(8)
+						b.WidthGrow()
+
+						// Display current value
+						b.AppendNewTextWidget(func(t *ebimui.Text) {
+							t.Content(fmt.Sprintf("Value: %d / %d", g.sliderValue, 100))
+							t.Face(loadedFonts.buttonFace)
+							t.Color(color.Black)
+						})
+
+						b.AddChild(g.CreateSlider(0, 100, &g.sliderValue))
+					})
 				}
 
 			})
@@ -222,6 +249,8 @@ func main() {
 
 	g := &Game{
 		uiContext: ebimui.NewUIContext(),
+
+		gridItemCount: 15,
 	}
 
 	if err := ebiten.RunGame(g); err != nil {
