@@ -7,15 +7,13 @@ import (
 	"github.com/hatchibombotar/ebimui/ebimui"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-// Slider:
-// width = 300
-// Bar at 0,0.
-
-func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
+func (g *Game) CreateSlider(minValue, maxValue int, value *int) *ebimui.Box {
 	ctx := g.uiContext
 	trackWidth := 300
+	scrubberWidth := 16
 
 	slider := ctx.NewBoxWidget(func(b *ebimui.Box) {
 		b.LayoutDirection(ebimui.LayoutColumn)
@@ -24,7 +22,7 @@ func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
 
 		// Display current value
 		b.AppendNewTextWidget(func(t *ebimui.Text) {
-			t.Content(fmt.Sprintf("Value: %d / %d", *value, max))
+			t.Content(fmt.Sprintf("Value: %d / %d", *value, maxValue))
 			t.Face(loadedFonts.buttonFace)
 			t.Color(color.Black)
 		})
@@ -33,13 +31,18 @@ func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
 		b.AppendNewBoxWidget(func(trackContainer *ebimui.Box) {
 			trackContainer.FixedWidth(trackWidth)
 			trackContainer.FixedHeight(24)
-			trackContainer.Padding(8, 4, 8, 4)
+			trackContainer.Padding(8, 0, 8, 0)
 			trackContainer.AlignVertical(ebimui.AlignCenter)
 			trackContainer.CursorShape(ebiten.CursorShapePointer)
 
+			isHot := ctx.IsWidgetHot(trackContainer)
 			// Handle track clicks
 			trackContainer.DeferToPostLayout(func() {
-				if ctx.IsWidgetHovered(trackContainer) && ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+				if ctx.IsWidgetHovered(trackContainer) && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+					ctx.SetWidgetHot(trackContainer)
+				}
+
+				if isHot {
 					mx, _ := ebiten.CursorPosition()
 					trackX := trackContainer.GetResultX()
 					trackW := trackContainer.GetResultWidth()
@@ -50,9 +53,10 @@ func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
 					if relativeX > trackW {
 						relativeX = trackW
 					}
-					progress := float64(relativeX) / float64(trackW)
-					fmt.Println(min + int(progress*float64(max-min)))
-					*value = min + int(progress*float64(max-min))
+					progress := (float64(relativeX) - float64(scrubberWidth/2)) / float64(trackW-scrubberWidth)
+					progress = max(0, progress)
+					progress = min(1, progress)
+					*value = minValue + int(progress*float64(maxValue-minValue))
 				}
 			})
 
@@ -69,13 +73,13 @@ func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
 				thumb.FixedHeight(16)
 
 				// Calculate thumb position based on value
-				range_ := max - min
-				progress := float64(*value-min) / float64(range_)
-				thumbX := int(progress * float64(trackWidth))
-				thumb.PositionRelative(thumbX-8, 0)
+				range_ := maxValue - minValue
+				progress := float64(*value-minValue) / float64(range_)
+				thumbX := int(progress*float64(trackWidth-scrubberWidth)) + (scrubberWidth / 2)
+				thumb.PositionRelative(thumbX-(scrubberWidth/2), 4)
 
 				// Styling
-				if ctx.IsWidgetHovered(thumb) || ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+				if isHot {
 					thumb.DrawFillSolid(color.RGBA{60, 120, 200, 255})
 				} else {
 					thumb.DrawFillSolid(color.RGBA{100, 140, 200, 255})
@@ -98,7 +102,7 @@ func (g *Game) CreateSlider(min, max int, value *int) *ebimui.Box {
 						}
 
 						progress := float64(relativeX) / float64(trackW)
-						*value = min + int(progress*float64(max-min))
+						*value = minValue + int(progress*float64(maxValue-minValue))
 					}
 				})
 			})

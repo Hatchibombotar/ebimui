@@ -24,6 +24,8 @@ type UIContext struct {
 	hoveredWidget  WidgetID
 	hoveredWidgets []WidgetID
 
+	hotWidget WidgetID
+
 	layoutComputed bool
 }
 
@@ -68,6 +70,10 @@ func (r *UIContext) Update() {
 
 	if r.hoveredWidget.callerId != 0 {
 		r.isHovered = true
+	}
+
+	if !ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
+		r.hotWidget = WidgetID{}
 	}
 
 	ebiten.SetCursorShape(r.cursorShape)
@@ -148,4 +154,12 @@ func (r *UIContext) PreUpdate() {
 
 func (r *UIContext) IsLayoutComputedOrComputing() bool {
 	return r.layoutComputed
+}
+
+func (r *UIContext) SetWidgetHot(widget GenericWidget) {
+	r.hotWidget = widget.GetUniqueId()
+}
+
+func (r *UIContext) IsWidgetHot(widget GenericWidget) bool {
+	return r.hotWidget == widget.GetUniqueId()
 }

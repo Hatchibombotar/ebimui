@@ -48,7 +48,11 @@ func (g *Game) Update() error {
 						})
 						b.CursorShape(ebiten.CursorShapePointer)
 
-						if g.uiContext.IsWidgetHovered(b) && inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+						if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) && g.uiContext.IsWidgetHovered(b) {
+							g.uiContext.SetWidgetHot(b)
+						}
+
+						if g.uiContext.IsWidgetHovered(b) && g.uiContext.IsWidgetHot(b) && inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
 							g.selectedTabIndex = i
 						}
 						if g.selectedTabIndex == i {
@@ -79,17 +83,20 @@ func (g *Game) Update() error {
 				case "Button":
 					b.AppendNewBoxWidget(func(b *ebimui.Box) {
 						b.Padding(12+4, 12+8, 12+4, 12+8)
-						if g.uiContext.IsWidgetHovered(b) {
-							if ebiten.IsMouseButtonPressed(ebiten.MouseButton0) {
-								b.DrawNineSlice(button_rectangle_line_pressed, 12)
-							} else {
-								b.DrawNineSlice(button_rectangle_line_hover, 12)
-							}
+						if g.uiContext.IsWidgetHovered(b) && inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+							g.uiContext.SetWidgetHot(b)
+						}
+
+						if g.uiContext.IsWidgetHot(b) {
+							b.DrawNineSlice(button_rectangle_line_pressed, 12)
+						} else if g.uiContext.IsWidgetHovered(b) {
+							b.DrawNineSlice(button_rectangle_line_hover, 12)
 						} else {
 							b.DrawNineSlice(button_rectangle_line, 12)
 						}
+
 						b.CursorShape(ebiten.CursorShapePointer)
-						if g.uiContext.IsWidgetHovered(b) && inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+						if g.uiContext.IsWidgetHovered(b) && g.uiContext.IsWidgetHot(b) && inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
 							fmt.Println("Press")
 						}
 						b.AppendNewTextWidget(func(t *ebimui.Text) {
