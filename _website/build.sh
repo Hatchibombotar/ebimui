@@ -1,1 +1,1 @@
-env GOOS=js GOARCH=wasm go build -o ./public/demo.wasm ../_examples/demo
+env GOOS=js GOARCH=wasm go build -o ./public/demo.wasm ../examples/demo
