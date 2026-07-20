@@ -93,4 +93,6 @@ func main() {
 
 ```
 
+The above code has the following result:
+
 ![Example UI](https://hatchibombotar.com/ebimui/image.png)
