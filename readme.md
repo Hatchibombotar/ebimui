@@ -93,4 +93,4 @@ func main() {
 
 ```
 
-![Example UI](https://hatchibombotar.com/ebimui/public/image.png)
+![Example UI](https://hatchibombotar.com/ebimui/image.png)
