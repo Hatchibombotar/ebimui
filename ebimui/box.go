@@ -110,7 +110,7 @@ func (w *Box) Update() {
 }
 
 func (w *Box) UpdateSizeWidthFitPass() {
-	if w.op.HeightMode == SizeFixed {
+	if w.op.WidthMode == SizeFixed {
 		w.resultWidth = w.op.Width
 		w.minWidth = w.op.Width
 		for _, child := range w.Children {

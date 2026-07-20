@@ -144,7 +144,7 @@ func (text *Text) Content(content string) {
 func (text *Text) Wrap(wrapMode WrapBehaviour) {
 	text.op.WrapBehaviour = wrapMode
 }
-func (text *Text) Face(face *text.GoTextFace) {
+func (text *Text) Face(face text.Face) {
 	text.op.Face = face
 }
 

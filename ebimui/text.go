@@ -41,8 +41,6 @@ type TextWidgetOps struct {
 	Color         color.Color
 	Face          text.Face
 	WrapBehaviour WrapBehaviour
-	// If set, will be called on every update call. If the text has changed, it will update.
-	// GetDynamicText func() string
 
 	TextAlign AlignMode
 }
